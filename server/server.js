@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import authRouter from "./routes/auth-routes/auth.route.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -20,11 +21,15 @@ app.use(
       "Expires",
       "Pragma",
     ],
-    Credential: true,
+    credentials: true,
   })
 );
 app.use(express.json());
 app.use(cookieParser());
+
+// routes
+
+app.use("/api/auth", authRouter);
 
 // Connect to MongoDB
 mongoose

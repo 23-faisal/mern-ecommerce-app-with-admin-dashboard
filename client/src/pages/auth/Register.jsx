@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
   const initialState = {
-    username: "",
+    userName: "",
     email: "",
     password: "",
   };
