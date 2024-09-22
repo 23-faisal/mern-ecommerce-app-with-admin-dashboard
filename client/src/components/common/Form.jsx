@@ -1,14 +1,15 @@
-import { Label } from "@shadcn/ui/label";
-import { Input } from "@shadcn/ui/input";
-import { TextArea } from "@shadcn/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@shadcn/ui/select";
-import { Button } from "../ui/button";
+} from "@/components/ui/select";
 
 const CommonForm = ({
   formControl,
@@ -64,7 +65,7 @@ const CommonForm = ({
 
       case "textarea":
         return (
-          <TextArea
+          <Textarea
             placeholder={getControlItem.placeholder}
             name={getControlItem.name}
             id={getControlItem.name}
@@ -88,7 +89,7 @@ const CommonForm = ({
       <div className="flex flex-col gap-3 ">
         {formControl.map((formItem) => (
           <div className="grid w-full gap-1.5" key={formItem.name}>
-            <Label htmlFor={formItem.name} className="mb-1">
+            <Label htmlFor={formItem.name} className="mb-1 text-left">
               {formItem.label}
             </Label>
             {renderInputsByComponentType(formItem)}
