@@ -1,5 +1,8 @@
 import express from "express";
-import RegisterUser from "../../controllers/auth/auth.controllers.js";
+import {
+  RegisterUser,
+  LoginUser,
+} from "../../controllers/auth/auth.controllers.js";
 
 const authRouter = express.Router();
 
@@ -9,6 +12,8 @@ authRouter.post("/register", RegisterUser);
 // login route
 
 // logout route
+
+authRouter.post("/login", LoginUser);
 
 // middleware
 
