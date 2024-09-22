@@ -43,7 +43,6 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     mutation.mutate(formData);
-    <Link to="/auth/login"></Link>;
   };
 
   return (

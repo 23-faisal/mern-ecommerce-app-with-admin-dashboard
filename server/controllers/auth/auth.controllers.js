@@ -54,7 +54,7 @@ export const LoginUser = async (req, res) => {
     if (!userExists) {
       return res.status(400).json({
         success: false,
-        message: "User already Exists. Please try with another email",
+        message: "Invalid email! Please try again",
       });
     }
 
@@ -64,7 +64,7 @@ export const LoginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Invalid password",
+        message: "Opps! Wrong password",
       });
     }
 
@@ -91,6 +91,7 @@ export const LoginUser = async (req, res) => {
           role: userExists.role,
           id: userExists._id,
         },
+        token,
       });
   } catch (error) {
     console.log(error);

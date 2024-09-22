@@ -16,10 +16,11 @@ import ShoppingCheckOut from "./pages/shopping-view/Checkout/CheckOut";
 import ShoppingAccount from "./pages/shopping-view/Account/Account";
 import CheckAuth from "./components/common/CheckAuth";
 import UnAuth from "./pages/un-auth/UnAuth";
+import userAuthStore from "./store/authStore/userAuthStore";
 
 function App() {
-  const isAuthenticated = false;
-  const user = null;
+  const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
+  const user = userAuthStore((state) => state.user);
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
