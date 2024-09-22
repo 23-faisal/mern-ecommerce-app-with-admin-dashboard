@@ -1,6 +1,6 @@
 import CommonForm from "@/components/common/Form";
 import { registerFormControl } from "@/config/config";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Register = () => {
