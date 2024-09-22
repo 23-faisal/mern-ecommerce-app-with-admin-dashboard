@@ -40,7 +40,7 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     mutation.mutate(formData);
     <Link to="/auth/login"></Link>;
@@ -92,8 +92,12 @@ const Register = () => {
           placeholder="Enter your password"
           required
         />
-        <Button type="submit" className="w-full mt-2">
-          Sign Up
+        <Button
+          type="submit"
+          className="w-full mt-2"
+          disabled={mutation.isLoading}
+        >
+          {mutation.isLoading ? "Signing Up..." : "Sign Up"}
         </Button>
       </form>
     </div>
