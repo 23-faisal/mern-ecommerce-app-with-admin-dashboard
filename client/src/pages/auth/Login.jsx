@@ -15,6 +15,7 @@ const Login = () => {
   };
 
   const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
 
   const [formData, setFormData] = useState(initialState);
   const navigate = useNavigate();
@@ -23,23 +24,21 @@ const Login = () => {
     mutationFn: async (data) => {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        data,
-        { withCredentials: true }
+        data
       );
       return response.data;
     },
     onSuccess: (data) => {
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        setUser(data.user);
-        toast.success(data.message);
-        navigate("/auth/register"); // Redirect to home page
-      }
+      localStorage.setItem("token", data.token);
+      setUser(data.user); // Check if data.user has valid user details
+      console.log("User Set:", data.user); // Log the user object
+      toast.success(data.message);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
     },
   });
+  console.log(user);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

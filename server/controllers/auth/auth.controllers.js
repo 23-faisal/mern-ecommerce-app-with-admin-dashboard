@@ -80,18 +80,17 @@ export const LoginUser = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
       })
       .status(200)
       .json({
         success: true,
         message: "User logged in successfully",
+        token,
         user: {
           email: userExists.email,
           role: userExists.role,
           id: userExists._id,
         },
-        token,
       });
   } catch (error) {
     console.log(error);
