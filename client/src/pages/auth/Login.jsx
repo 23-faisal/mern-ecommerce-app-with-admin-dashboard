@@ -15,7 +15,6 @@ const Login = () => {
   };
 
   const setUser = useAuthStore((state) => state.setUser);
-  const user = useAuthStore((state) => state.user);
 
   const [formData, setFormData] = useState(initialState);
   const navigate = useNavigate();
@@ -31,14 +30,12 @@ const Login = () => {
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
       setUser(data.user); // Check if data.user has valid user details
-      console.log("User Set:", data.user); // Log the user object
       toast.success(data.message);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
     },
   });
-  console.log(user);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
