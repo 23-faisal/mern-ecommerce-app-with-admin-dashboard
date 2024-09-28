@@ -62,7 +62,7 @@ export const addProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const listOfProducts = await Product.find({});
+    const listOfProducts = await Product.find({}).sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       message: "Product fetched successfully",

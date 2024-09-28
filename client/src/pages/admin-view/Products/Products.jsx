@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import ProductImageUpload from "@/components/ui/admin-view/ImageUpload";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import ShowProducts from "@/components/ui/admin-view/ShowProducts";
 
 const initialForm = {
   image: null,
@@ -33,9 +36,10 @@ const initialForm = {
 const AdminProducts = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(initialForm);
-  const [imageFile, setImageFile] = useState(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-  const [imageLoadingState, setImageLoadingState] = useState(false);
+  const [imageFile, setImageFile] = useState(null); // To hold the image file
+  const [imageLoadingState, setImageLoadingState] = useState(false); // For image loading state
+
+  const queryClient = useQueryClient();
 
   // Function to handle input changes
   const handleChange = (e) => {
@@ -46,11 +50,61 @@ const AdminProducts = () => {
     });
   };
 
+  // Function to upload image to Cloudinary
+  const uploadImageToCloudinary = async () => {
+    const formData = new FormData();
+    formData.append("my_file", imageFile); // Append the image file to the form data
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data?.uploadResult?.url; // Return the Cloudinary URL of the image
+  };
+
+  // Mutation to handle form submission
+  const mutation = useMutation({
+    mutationFn: async (productData) => {
+      // First, upload the image if an image is selected
+      if (imageFile) {
+        setImageLoadingState(true); // Set loading state for the image upload
+        const imageUrl = await uploadImageToCloudinary(); // Get the uploaded image URL
+        setImageLoadingState(false); // End image loading state
+
+        // Attach the image URL to the form data
+        productData.image = imageUrl;
+      }
+
+      // Now, send the complete form data to the backend
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/admin/products/add-product`,
+        productData
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      setOpen(false); // Close the sheet on success
+      setImageFile(null);
+      setFormData({});
+      queryClient.invalidateQueries(["products"]);
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Submit form data to backend here
+
+    // Submit the form data, image will be uploaded during this process
+    mutation.mutate(formData);
   };
 
   // Render form inputs based on configuration
@@ -100,12 +154,12 @@ const AdminProducts = () => {
     }
   };
 
-  console.log(formData);
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <div className="mb-5 flex justify-end w-full ">
         <Button onClick={() => setOpen(true)}>Add new product</Button>
       </div>
+
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 ">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="right" className="overflow-auto">
@@ -113,14 +167,15 @@ const AdminProducts = () => {
               Add a product
             </SheetHeader>
             <SheetDescription></SheetDescription>
+
+            {/* Product Image Upload Component */}
             <ProductImageUpload
               imageFile={imageFile}
               setImageFile={setImageFile}
-              uploadedImageUrl={uploadedImageUrl}
-              setUploadedImageUrl={setUploadedImageUrl}
               setImageLoadingState={setImageLoadingState}
-              setFormData={setFormData}
             />
+
+            {/* Product Form */}
             <form onSubmit={handleSubmit} className="grid gap-4 mt-4">
               {addProductFormElement.map((element) => (
                 <div key={element.name} className="flex flex-col">
@@ -130,14 +185,22 @@ const AdminProducts = () => {
                   {renderFormElement(element)}
                 </div>
               ))}
-              <Button className="" type="submit">
-                Submit
+
+              <Button
+                type="submit"
+                className={`${mutation.isLoading && "disabled:"}`}
+              >
+                {imageLoadingState ? "wait a sec..." : "Submit"}
               </Button>
             </form>
           </SheetContent>
         </Sheet>
       </div>
-    </>
+      <div>
+        <h1 className="font-bold text-2xl text-center ">Products</h1>
+        <ShowProducts />
+      </div>
+    </div>
   );
 };
 
