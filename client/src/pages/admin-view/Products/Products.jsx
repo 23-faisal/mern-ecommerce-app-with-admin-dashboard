@@ -35,6 +35,8 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialForm);
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageLoadingState, setImageLoadingState] = useState(false);
+
   // Function to handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -97,6 +99,8 @@ const AdminProducts = () => {
         return null;
     }
   };
+
+  console.log(formData);
   return (
     <>
       <div className="mb-5 flex justify-end w-full ">
@@ -114,6 +118,8 @@ const AdminProducts = () => {
               setImageFile={setImageFile}
               uploadedImageUrl={uploadedImageUrl}
               setUploadedImageUrl={setUploadedImageUrl}
+              setImageLoadingState={setImageLoadingState}
+              setFormData={setFormData}
             />
             <form onSubmit={handleSubmit} className="grid gap-4 mt-4">
               {addProductFormElement.map((element) => (

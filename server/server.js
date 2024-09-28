@@ -4,6 +4,7 @@ import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth-routes/auth.route.js";
+import { uploadImage } from "./routes/admin/product.route.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -30,6 +31,7 @@ app.use(cookieParser());
 // routes
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin/products", uploadImage);
 
 // Connect to MongoDB
 mongoose
