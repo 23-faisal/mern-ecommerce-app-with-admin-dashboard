@@ -38,6 +38,7 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(initialForm);
   const [imageFile, setImageFile] = useState(null); // To hold the image file
   const [imageLoadingState, setImageLoadingState] = useState(false); // For image loading state
+  const [editData, setEditData] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -65,23 +66,20 @@ const AdminProducts = () => {
       }
     );
 
-    return response.data?.uploadResult?.url; // Return the Cloudinary URL of the image
+    return response.data?.uploadResult?.url;
   };
 
   // Mutation to handle form submission
   const mutation = useMutation({
     mutationFn: async (productData) => {
-      // First, upload the image if an image is selected
       if (imageFile) {
         setImageLoadingState(true); // Set loading state for the image upload
         const imageUrl = await uploadImageToCloudinary(); // Get the uploaded image URL
         setImageLoadingState(false); // End image loading state
 
-        // Attach the image URL to the form data
         productData.image = imageUrl;
       }
 
-      // Now, send the complete form data to the backend
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/products/add-product`,
         productData
@@ -99,12 +97,42 @@ const AdminProducts = () => {
     },
   });
 
+  const editProductMutation = useMutation({
+    mutationFn: async (productData) => {
+      if (imageFile) {
+        setImageLoadingState(true);
+        const imageUrl = await uploadImageToCloudinary();
+        setImageLoadingState(false);
+        productData.image = imageUrl;
+      }
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/admin/products/edit-product/${
+          productData._id
+        }`,
+        productData
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      setOpen(false);
+      setImageFile(null);
+      setFormData({});
+      queryClient.invalidateQueries(["products"]);
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Submit the form data, image will be uploaded during this process
-    mutation.mutate(formData);
+    if (editData) {
+      editProductMutation.mutate(formData);
+    } else {
+      mutation.mutate(formData);
+    }
   };
 
   // Render form inputs based on configuration
@@ -136,9 +164,17 @@ const AdminProducts = () => {
             onValueChange={(value) =>
               setFormData({ ...formData, [element.name]: value })
             }
+            value={formData[element.name]} // Bind the value to formData
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder={element.placeholder} />
+              <SelectValue placeholder={element.placeholder}>
+                {/* Display the current value in the Select */}
+                {formData[element.name]
+                  ? element.options.find(
+                      (option) => option.id === formData[element.name]
+                    )?.label
+                  : element.placeholder}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {element.options.map((option) => (
@@ -149,6 +185,7 @@ const AdminProducts = () => {
             </SelectContent>
           </Select>
         );
+
       default:
         return null;
     }
@@ -157,14 +194,22 @@ const AdminProducts = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-5 flex justify-end w-full ">
-        <Button onClick={() => setOpen(true)}>Add new product</Button>
+        <Button
+          onClick={() => {
+            setOpen(true);
+            setEditData(false);
+            setFormData({});
+          }}
+        >
+          Add new product
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 ">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="right" className="overflow-auto">
             <SheetHeader className="font-bold text-2xl mt-6 mb-4">
-              Add a product
+              {editData ? " Edit Product" : "Add a product"}
             </SheetHeader>
             <SheetDescription></SheetDescription>
 
@@ -173,6 +218,8 @@ const AdminProducts = () => {
               imageFile={imageFile}
               setImageFile={setImageFile}
               setImageLoadingState={setImageLoadingState}
+              editData={editData}
+              formData={formData}
             />
 
             {/* Product Form */}
@@ -186,9 +233,14 @@ const AdminProducts = () => {
                 </div>
               ))}
 
+              <Button type="submit" className={`${!editData && "hidden"}`}>
+                Update
+              </Button>
               <Button
                 type="submit"
-                className={`${mutation.isLoading && "disabled:"}`}
+                className={`${mutation.isLoading && "disabled"} ${
+                  editData && "hidden"
+                }`}
               >
                 {imageLoadingState ? "wait a sec..." : "Submit"}
               </Button>
@@ -197,8 +249,12 @@ const AdminProducts = () => {
         </Sheet>
       </div>
       <div>
-        <h1 className="font-bold text-2xl text-center ">Products</h1>
-        <ShowProducts />
+        <h1 className="font-bold text-2xl text-center mb-8">Products</h1>
+        <ShowProducts
+          setEditData={setEditData}
+          setFormData={setFormData}
+          setOpen={setOpen}
+        />
       </div>
     </div>
   );

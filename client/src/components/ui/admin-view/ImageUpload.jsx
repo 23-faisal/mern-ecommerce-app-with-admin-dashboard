@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 const ProductImageUpload = ({
   imageFile,
   setImageFile,
-  setImageLoadingState,
+  formData,
+  editData,
 }) => {
   const inputRef = useRef(null);
 
@@ -29,50 +30,67 @@ const ProductImageUpload = ({
 
   return (
     <div>
-      <div className="w-full max-w-md mx-auto ">
-        <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
-        <div
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          className="border-2 border-dashed rounded-lg p-4 mt-4 "
-        >
-          <Input
-            id="image-upload"
-            type="file"
-            className="hidden"
-            ref={inputRef}
-            onChange={handleImageFileChange}
+      {editData ? (
+        <>
+          <img
+            className="w-full h-auto max-h-64 object-cover rounded-lg"
+            src={formData.image}
+            alt={formData.title}
           />
-          {!imageFile ? (
-            <>
-              <Label
-                htmlFor="image-upload"
-                className="flex flex-col items-center justify-center h-32 mb-2 gap-2 cursor-pointer"
-              >
-                <UploadCloudIcon className="w-10 h-10 text-muted-foreground" />
-                <span className="  text-muted-foreground">
-                  Drag & drop or click to upload image
-                </span>
-              </Label>
-            </>
-          ) : (
-            <div className="flex flex-col items-center">
-              <img
-                src={URL.createObjectURL(imageFile)}
-                alt="Product preview"
-                className="w-full h-auto max-h-64 object-cover rounded-lg"
+          <h1 className="text-lg text-slate-700">
+            Your Cover image will be the same. You can't change it
+          </h1>
+        </>
+      ) : (
+        <>
+          <div className="w-full max-w-md mx-auto ">
+            <Label className="text-lg font-semibold mb-2 block">
+              Upload Image
+            </Label>
+            <div
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className="border-2 border-dashed rounded-lg p-4 mt-4 "
+            >
+              <Input
+                id="image-upload"
+                type="file"
+                className="hidden"
+                ref={inputRef}
+                onChange={handleImageFileChange}
               />
-              <Button
-                onClick={() => setImageFile(null)}
-                className="mt-4"
-                variant="outline"
-              >
-                Remove Image
-              </Button>
+              {!imageFile ? (
+                <>
+                  <Label
+                    htmlFor="image-upload"
+                    className="flex flex-col items-center justify-center h-32 mb-2 gap-2 cursor-pointer"
+                  >
+                    <UploadCloudIcon className="w-10 h-10 text-muted-foreground" />
+                    <span className="  text-muted-foreground">
+                      Drag & drop or click to upload image
+                    </span>
+                  </Label>
+                </>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <img
+                    src={URL.createObjectURL(imageFile)}
+                    alt="Product preview"
+                    className="w-full h-auto max-h-64 object-cover rounded-lg"
+                  />
+                  <Button
+                    onClick={() => setImageFile(null)}
+                    className="mt-4"
+                    variant="outline"
+                  >
+                    Remove Image
+                  </Button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

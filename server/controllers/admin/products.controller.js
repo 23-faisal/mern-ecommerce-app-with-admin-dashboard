@@ -92,7 +92,7 @@ export const editProduct = async (req, res) => {
       totalStock,
     } = req.body;
 
-    const productExists = Product.findById(id);
+    const productExists = await Product.findById(id);
     if (!productExists) {
       return res.status(400).json({
         success: false,
