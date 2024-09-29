@@ -5,6 +5,16 @@ import {
   SheetDescription,
   SheetHeader,
 } from "@/components/ui/sheet";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { useState } from "react";
 import { addProductFormElement } from "@/config/config";
 import { Input } from "@/components/ui/input";
@@ -39,6 +49,9 @@ const AdminProducts = () => {
   const [imageFile, setImageFile] = useState(null); // To hold the image file
   const [imageLoadingState, setImageLoadingState] = useState(false); // For image loading state
   const [editData, setEditData] = useState(false);
+  const [removeProduct, setRemoveProduct] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [productIdToDelete, setProductIdToDelete] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -97,6 +110,8 @@ const AdminProducts = () => {
     },
   });
 
+  // mutation for edit form submission
+
   const editProductMutation = useMutation({
     mutationFn: async (productData) => {
       if (imageFile) {
@@ -124,6 +139,36 @@ const AdminProducts = () => {
       alert(error.message);
     },
   });
+
+  // function for delete a product
+
+  const deleteProduct = async (id) => {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/admin/products/delete-product/${id}`
+    );
+    return response.data;
+  };
+
+  // mutation for delete product
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deleteProduct(id),
+    onSuccess: () => {
+      setDeleteDialogOpen(false); // Close the dialog on success
+      queryClient.invalidateQueries(["products"]); // Invalidate and refetch the products list
+    },
+    onError: (error) => {
+      alert(error.message);
+      setDeleteDialogOpen(false); // Close the dialog on error
+    },
+  });
+
+  // Function to handle the delete confirmation
+  const handleDelete = () => {
+    if (productIdToDelete) {
+      deleteMutation.mutate(productIdToDelete);
+    }
+  };
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -254,8 +299,32 @@ const AdminProducts = () => {
           setEditData={setEditData}
           setFormData={setFormData}
           setOpen={setOpen}
+          setRemoveProduct={setRemoveProduct}
+          setDeleteDialogOpen={setDeleteDialogOpen}
+          setProductIdToDelete={setProductIdToDelete}
         />
       </div>
+      {/* Confirmation Dialog for Deleting a Product */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogTrigger asChild></DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Product</DialogTitle>
+            <DialogDescription>
+              Do you want to delete this product?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+            <Button onClick={() => setDeleteDialogOpen(false)} type="submit">
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} type="submit">
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -9,7 +9,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
-const ShowProducts = ({ setFormData, setOpen, setEditData }) => {
+const ShowProducts = ({
+  setFormData,
+  setOpen,
+  setEditData,
+  setRemoveProduct,
+  setDeleteDialogOpen,
+  setProductIdToDelete,
+}) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
@@ -81,7 +88,16 @@ const ShowProducts = ({ setFormData, setOpen, setEditData }) => {
               >
                 Edit
               </Button>
-              <Button variant="destructive">Delete</Button>
+              <Button
+                onClick={() => {
+                  setRemoveProduct(true);
+                  setDeleteDialogOpen(true);
+                  setProductIdToDelete(product._id);
+                }}
+                variant="destructive"
+              >
+                Delete
+              </Button>
             </CardFooter>
           </Card>
         ))}

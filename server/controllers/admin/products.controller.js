@@ -106,7 +106,16 @@ export const editProduct = async (req, res) => {
     productExists.brand = brand || productExists.brand;
     productExists.category = category || productExists.category;
     productExists.price = price || productExists.price;
-    productExists.salePrice = salePrice || productExists.salePrice;
+
+    productExists.totalStock = totalStock || productExists.totalStock;
+
+    // Explicitly handle salePrice, allowing it to be set to null
+    if (salePrice === null || salePrice === "") {
+      productExists.salePrice = null;
+    } else {
+      productExists.salePrice = salePrice || productExists.salePrice;
+    }
+
     productExists.totalStock = totalStock || productExists.totalStock;
 
     await productExists.save();
