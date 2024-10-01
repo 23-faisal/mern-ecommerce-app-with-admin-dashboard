@@ -70,7 +70,12 @@ export const LoginUser = async (req, res) => {
 
     // generate token
     const token = await jwt.sign(
-      { id: userExists._id, role: userExists.role, email: userExists.email },
+      {
+        id: userExists._id,
+        role: userExists.role,
+        email: userExists.email,
+        userName: userExists.userName,
+      },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
@@ -90,6 +95,7 @@ export const LoginUser = async (req, res) => {
           email: userExists.email,
           role: userExists.role,
           id: userExists._id,
+          userName: userExists.userName,
         },
       });
   } catch (error) {
@@ -101,7 +107,3 @@ export const LoginUser = async (req, res) => {
     });
   }
 };
-
-
-
-

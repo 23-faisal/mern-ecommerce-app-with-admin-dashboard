@@ -30,7 +30,7 @@ const Login = () => {
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
       setUser(data.user); // Check if data.user has valid user details
-      toast.success(data.message);
+      toast.success(`Welcome, ${data.user.userName}`);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
