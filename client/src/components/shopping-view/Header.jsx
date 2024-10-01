@@ -42,6 +42,16 @@ const MenuItems = ({ onMenuItemClick }) => {
             navigate("/shop/account");
           }}
           variant="outline"
+          className="flex items-center gap-2 bg-green-500 text-white "
+        >
+          <ShoppingCart />
+          Cart
+        </Button>
+        <Button
+          onClick={() => {
+            navigate("/shop/account");
+          }}
+          variant="outline"
           className="flex items-center gap-2 bg-teal-500 text-white "
         >
           <User />
