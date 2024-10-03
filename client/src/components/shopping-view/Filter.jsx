@@ -11,12 +11,17 @@ const ProductFilter = () => {
         <h2 className="text-lg font-sm font-extrabold">Filters</h2>
       </div>
       <div className="p-4 space-y-4">
+        {/* Loop through filterOptions */}
         {Object.keys(filterOptions).map((keyItem) => (
-          <div key={keyItem.id} className="">
+          <div key={keyItem} className="">
             <h3 className="text-base font-bold ">{keyItem}</h3>
             <div className="grid gap-2 mt-2">
+              {/* Correctly map through filterOptions[keyItem] */}
               {filterOptions[keyItem].map((options) => (
-                <Label className="flex items-center gap-2 font-medium">
+                <Label
+                  key={options.id}
+                  className="flex items-center gap-2 font-medium"
+                >
                   <Checkbox />
                   {options.label}
                 </Label>
