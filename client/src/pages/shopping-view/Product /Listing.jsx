@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ProductFilter from "@/components/shopping-view/Filter";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { ArrowUpDownIcon } from "lucide-react";
 import { sortOptions } from "@/config/config";
 import axios from "axios";
 import ProductCard from "@/components/shopping-view/ProductCard";
+import { useSearchParams } from "react-router-dom";
 
 const fetchProducts = async (filters) => {
   const response = await axios.get(
@@ -26,7 +27,18 @@ const ShoppingListing = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [sortOption, setSortOption] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Sync state with URL query parameters
+  useEffect(() => {
+    const categories = searchParams.get("categories") || "";
+    const brands = searchParams.get("brands") || "";
+    const sort = searchParams.get("sort") || "";
+
+    if (categories) setSelectedCategories(categories.split(","));
+    if (brands) setSelectedBrands(brands.split(","));
+    if (sort) setSortOption(sort);
+  }, [searchParams]);
 
   const {
     data: product,
@@ -43,6 +55,29 @@ const ShoppingListing = () => {
     enabled: true,
   });
 
+  // Handle filter or sort change
+
+  const handleFilterChange = (newCategories, newBrands, newSort) => {
+    const params = new URLSearchParams();
+
+    if (newCategories.length > 0) {
+      params.append("categories", newCategories.join(","));
+    }
+    if (newBrands.length > 0) {
+      params.append("brands", newBrands.join(","));
+    }
+    if (newSort) {
+      params.append("sort", newSort);
+    }
+
+    setSearchParams(params); // This updates the URL
+  };
+
+  // Call handleFilterChange when filters or sort options are updated
+  useEffect(() => {
+    handleFilterChange(selectedCategories, selectedBrands, sortOption);
+  }, [selectedCategories, selectedBrands, sortOption]);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter
@@ -50,8 +85,6 @@ const ShoppingListing = () => {
         setSelectedCategories={setSelectedCategories}
         selectedBrands={selectedBrands}
         setSelectedBrands={setSelectedBrands}
-        isChecked={isChecked}
-        setIsChecked={setIsChecked}
       />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between ">

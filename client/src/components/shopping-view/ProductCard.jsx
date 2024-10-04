@@ -6,18 +6,9 @@ import loaderGif from "@/assets/loader.gif";
 import Loader from "../common/loader";
 
 const ProductCard = ({ product, isLoading, error }) => {
-  // const navigate = useNavigate();
+  
 
-  // const handleViewDetails = () => {
-  //   navigate(`/product/${product.id}`);
-  // };
-
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center h-full">
-        <img src={loaderGif} alt="Loading..." className="w-16 h-16" />
-      </div>
-    );
+  if (isLoading) return <h1>Loading...</h1>;
 
   if (error) return <div>Error: {error.message}</div>;
 

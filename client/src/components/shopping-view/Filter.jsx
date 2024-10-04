@@ -8,8 +8,7 @@ const ProductFilter = ({
   setSelectedCategories,
   selectedBrands,
   setSelectedBrands,
-  isChecked,
-  setIsChecked,
+  
 }) => {
   const handleCheckboxChange = (optionId, isChecked, keyItem) => {
     if (isChecked) {
