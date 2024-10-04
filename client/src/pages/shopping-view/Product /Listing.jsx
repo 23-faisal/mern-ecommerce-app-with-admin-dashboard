@@ -14,6 +14,7 @@ import { sortOptions } from "@/config/config";
 import axios from "axios";
 import ProductCard from "@/components/shopping-view/ProductCard";
 import { useSearchParams } from "react-router-dom";
+import ProductDetailsDialog from "@/components/shopping-view/ProductDetailsDialog";
 
 const fetchProducts = async (filters) => {
   const response = await axios.get(
@@ -28,6 +29,8 @@ const ShoppingListing = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [open, setOpen] = useState(false);
+  const [productId, setProductId] = useState("");
 
   // Sync state with URL query parameters
   useEffect(() => {
@@ -78,6 +81,11 @@ const ShoppingListing = () => {
     handleFilterChange(selectedCategories, selectedBrands, sortOption);
   }, [selectedCategories, selectedBrands, sortOption]);
 
+  // Handle product details dialog open
+  const handleProductDetails = () => {
+    setOpen(true); // Open dialog when a product is clicked
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 p-4 md:p-6">
       <ProductFilter
@@ -104,6 +112,7 @@ const ShoppingListing = () => {
               <DropdownMenuRadioGroup
                 value={sortOption}
                 onValueChange={setSortOption}
+                handleProductDetails={handleProductDetails}
               >
                 {sortOptions.map((option) => (
                   <DropdownMenuRadioItem key={option.id} value={option.id}>
@@ -114,6 +123,14 @@ const ShoppingListing = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div>
+          <ProductDetailsDialog
+            open={open}
+            setOpen={setOpen}
+            productId={productId}
+            product={product}
+          />
+        </div>
         <div className="p-4 grid grid-cols-1   lg:grid-cols-3 gap-4 ">
           {product?.map((product) => (
             <div key={product._id} className="">
@@ -122,6 +139,8 @@ const ShoppingListing = () => {
                 isLoading={isLoading}
                 error={error}
                 product={product}
+                handleProductDetails={handleProductDetails}
+                setProductId={setProductId}
               />
             </div>
           ))}
