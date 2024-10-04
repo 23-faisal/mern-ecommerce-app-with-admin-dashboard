@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth-routes/auth.route.js";
 import { productRoute } from "./routes/admin/product.route.js";
+import { ShopRouter } from "./routes/shop/shop.route.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -32,6 +33,9 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", productRoute);
+
+// shop
+app.use("/api/shop/products", ShopRouter);
 
 // Connect to MongoDB
 mongoose
