@@ -1,5 +1,7 @@
 import { Product } from "../../models/product.model.js";
 
+// all the products in the user UI
+
 export const shopController = async (req, res) => {
   const { categories, brands, sort } = req.query;
   let sortOption = {};
@@ -37,6 +39,35 @@ export const shopController = async (req, res) => {
       success: true,
       data: products,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// show single product
+
+export const productDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(400).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+
+    //
   } catch (error) {
     res.status(500).json({
       success: false,
