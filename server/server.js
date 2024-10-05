@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth-routes/auth.route.js";
 import { productRoute } from "./routes/admin/product.route.js";
 import { ShopRouter } from "./routes/shop/shop.route.js";
+import { cartRouter } from "./routes/shop/cart.route.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -36,6 +37,9 @@ app.use("/api/admin/products", productRoute);
 
 // shop
 app.use("/api/shop/products", ShopRouter);
+
+// cart
+app.use("/api/shop/cart", cartRouter);
 
 // Connect to MongoDB
 mongoose
