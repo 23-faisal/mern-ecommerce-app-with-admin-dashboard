@@ -114,8 +114,8 @@ const ShoppingHeader = () => {
   };
 
   return (
-    <div className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="flex items-center h-16 justify-between px-4 md:px-6">
+    <div className="sticky max-w-6xl mx-auto top-0 z-50 w-full ">
+      <div className="flex items-center h-16 justify-between px-4 md:px-0  ">
         <Link
           className="flex items-center gap-2 text-teal-500  "
           to="/shop/home"
