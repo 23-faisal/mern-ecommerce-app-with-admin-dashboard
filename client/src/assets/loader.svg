@@ -1,0 +1,29 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="100"
+  height="100"
+  viewBox="0 0 100 100"
+  style="margin: auto; display: block;"
+>
+  <circle
+    cx="50"
+    cy="50"
+    r="40"
+    stroke="teal"
+    stroke-width="8"
+    fill="none"
+    stroke-linecap="round"
+    stroke-dasharray="150, 200"
+    transform="rotate(45 50 50)"
+  >
+    <animateTransform
+      attributeName="transform"
+      attributeType="XML"
+      type="rotate"
+      from="0 50 50"
+      to="360 50 50"
+      dur="1.5s"
+      repeatCount="indefinite"
+    />
+  </circle>
+</svg>

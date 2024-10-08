@@ -29,21 +29,26 @@ export const addToCart = async (req, res) => {
       cart = new Cart({ userId, items: [] });
     }
 
-    const findCurrentProductIndex = cart.items.findIndex(
+    const existingItem = cart.items.find(
       (item) => item.productId.toString() === productId
     );
 
-    if (findCurrentProductIndex === -1) {
+    if (!existingItem) {
       cart.items.push({ productId: product._id, quantity });
     } else {
-      cart.items[findCurrentProductIndex].quantity += quantity;
+      existingItem.quantity += 1;
     }
 
     await cart.save();
 
+    const populatedCart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      select: "image title price salePrice", // Ensure these fields are selected
+    });
+
     res.status(200).json({
       success: true,
-      data: cart,
+      data: populatedCart,
     });
   } catch (error) {
     res.status(500).json({
@@ -53,7 +58,6 @@ export const addToCart = async (req, res) => {
   }
 };
 
-// fetch cart items
 // fetch cart items
 
 export const fetchCartItem = async (req, res) => {
@@ -115,8 +119,61 @@ export const fetchCartItem = async (req, res) => {
 
 // update cart item quantity
 
-export const updateCartItemQuantity = async () => {
+export const updateCartItemQuantity = async (req, res) => {
+  const { userId, productId, action } = req.body;
+
   try {
+    // Fetch the cart from the database (assuming you have a Cart model)
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    }
+
+    // Find the item in the cart
+    const itemIndex = cart.items.findIndex(
+      (item) => item.productId == productId
+    );
+
+    if (itemIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found in cart",
+      });
+    }
+
+    // Update quantity based on action
+    if (action === "increase") {
+      cart.items[itemIndex].quantity += 1;
+    } else if (action === "decrease" && cart.items[itemIndex].quantity > 1) {
+      cart.items[itemIndex].quantity -= 1;
+    } else if (action === "decrease" && cart.items[itemIndex].quantity === 1) {
+      // Optionally: Remove item if quantity goes below 1
+      cart.items.splice(itemIndex, 1);
+    }
+
+    // Recalculate the total price based on updated cart items
+    cart.totalPrice = cart.items.reduce((acc, item) => {
+      const productPrice = item.productId.salePrice || item.productId.price;
+      return acc + item.quantity * productPrice;
+    }, 0);
+
+    // Save the updated cart
+    await cart.save();
+
+    // Return the updated cart
+    const updatedCart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      select: "image title price salePrice quantity",
+    });
+
+    res.status(200).json({
+      success: true,
+      data: updatedCart,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -139,7 +196,7 @@ export const removeFromCart = async (req, res) => {
     }
 
     // Find the user's cart
-    let cart = await Cart.findOne({ userId });
+    let cart = await Cart.findOne({ userId }).populate("items.productId");
 
     if (!cart) {
       return res.status(404).json({
@@ -149,22 +206,32 @@ export const removeFromCart = async (req, res) => {
     }
 
     // Find the index of the product in the cart items
-    const productIndex = cart.items.findIndex(
-      (item) => item.productId.toString() === productId
+    const product = cart.items.find(
+      (item) => item.productId._id.toString() === productId
     );
 
-    if (productIndex === -1) {
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found in the cart",
       });
     }
 
-    // Remove the product from the cart
-    cart.items.splice(productIndex, 1);
+    // Remove the product from the cart by filtering it out
+    cart.items = cart.items.filter(
+      (item) => item.productId._id.toString() !== productId
+    );
 
     // Save the updated cart
     await cart.save();
+
+    // re populate the cart and return full product details
+
+    // Re-populate the cart and return full product details
+    cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      select: "image title price salePrice quantity",
+    });
 
     res.status(200).json({
       success: true,

@@ -23,9 +23,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import useCartStore from "@/store/cartStore/useCartStore";
+import Cart from "./Cart";
 
 const MenuItems = ({ onMenuItemClick }) => {
   const { logout } = useAuthStore();
+
   const navigate = useNavigate();
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 items-center gap-6 lg:flex-row ">
@@ -36,8 +39,8 @@ const MenuItems = ({ onMenuItemClick }) => {
           </Link>
         </div>
       ))}
-      <div className="flex flex-col gap-4 lg:hidden">
-        <Button
+      <div className="">
+        {/* <Button
           onClick={() => {
             navigate("/shop/account");
           }}
@@ -46,25 +49,27 @@ const MenuItems = ({ onMenuItemClick }) => {
         >
           <ShoppingCart />
           Cart
-        </Button>
-        <Button
-          onClick={() => {
-            navigate("/shop/account");
-          }}
-          variant="outline"
-          className="flex items-center gap-2 bg-teal-500 text-white "
-        >
-          <User />
-          Account
-        </Button>
-        <Button
-          onClick={logout}
-          variant="outline"
-          className="flex items-center gap-2 bg-red-500 text-white "
-        >
-          <LogOut />
-          Logout
-        </Button>
+        </Button> */}
+        <div className="lg:hidden flex flex-col gap-4 ">
+          <Button
+            onClick={() => {
+              navigate("/shop/account");
+            }}
+            variant="outline"
+            className="flex items-center gap-2 bg-teal-500 text-white "
+          >
+            <User />
+            Account
+          </Button>
+          <Button
+            onClick={logout}
+            variant="outline"
+            className="flex items-center gap-2 bg-red-500 text-white "
+          >
+            <LogOut />
+            Logout
+          </Button>
+        </div>
       </div>
     </nav>
   );
@@ -76,9 +81,6 @@ const HeaderRight = () => {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Button variant="outline">
-        <ShoppingCart /> <span className="sr-only">User cart</span>
-      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black cursor-pointer">
@@ -125,6 +127,10 @@ const ShoppingHeader = () => {
         <div className="hidden lg:flex items-center gap-6">
           <MenuItems /> {/* Show menu items and logout button */}
         </div>
+        <div className="block lg:hidden">
+          {" "}
+          <Cart />
+        </div>
 
         {/* Mobile Menu using Sheet component */}
         <div className="lg:hidden">
@@ -148,8 +154,13 @@ const ShoppingHeader = () => {
         </div>
 
         {/* Navbar right */}
-        <div className="hidden lg:block">
-          <HeaderRight />
+        <div className="flex gap-6 items-center  lg:flex-row">
+          <div className="hidden lg:block">
+            <Cart />
+          </div>
+          <div className="hidden lg:block">
+            <HeaderRight />
+          </div>
         </div>
       </div>
     </div>

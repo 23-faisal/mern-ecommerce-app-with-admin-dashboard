@@ -2,6 +2,8 @@
 import React from "react";
 import { Card } from "@/components/ui/card"; // Adjust the import based on your UI library
 import { Button } from "@/components/ui/button"; // Adjust the import based on your UI library
+import useCartStore from "@/store/cartStore/useCartStore";
+import useAuthStore from "@/store/authStore/userAuthStore";
 
 const ProductCard = ({
   product,
@@ -10,6 +12,9 @@ const ProductCard = ({
   handleProductDetails,
   setProductId,
 }) => {
+  const { cart, addToCart } = useCartStore();
+  const { user } = useAuthStore();
+
   if (isLoading) return <h1>Loading...</h1>;
 
   if (error) return <div>Error: {error.message}</div>;
@@ -17,6 +22,16 @@ const ProductCard = ({
   if (product?.length === 0) {
     return <div>No products available.</div>;
   }
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(user.id, product._id, 1); // Pass userId, productId, and quantity
+    }
+  };
+
+  // see product is available in the cart
+
+  const cartItems = cart.items;
 
   return (
     <Card className="p-4 hover:shadow-lg hover:shadow-slate-500 transition ease-in-out duration-75">
@@ -67,7 +82,18 @@ const ProductCard = ({
           )}
         </div>
       </div>
-      <Button className="mt-6 w-full ">Add To cart</Button>
+
+      {cart.items.find((item) => item.productId._id === product._id) ? (
+        // If the product exists in the cart, show some other button or text
+        <Button disabled className="mt-6 w-full ">
+          Already added in the cart
+        </Button>
+      ) : (
+        // If the product does not exist in the cart, show Add to Cart button
+        <Button onClick={handleAddToCart} className="mt-6 w-full ">
+          Add To Cart
+        </Button>
+      )}
     </Card>
   );
 };
