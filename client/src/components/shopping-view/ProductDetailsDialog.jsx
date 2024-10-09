@@ -10,9 +10,38 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { StarIcon } from "lucide-react";
+import useCartStore from "@/store/cartStore/useCartStore";
+import useAuthStore from "@/store/authStore/userAuthStore";
 
 const ProductDetailsDialog = ({ open, setOpen, productId, product }) => {
+  const { addToCart, cart } = useCartStore(); // Use addToCart and cart from the cart store
+  const { user } = useAuthStore();
   const selectedProduct = product?.find((p) => p._id === productId);
+
+  // Function to check if product is already in cart
+  const isProductInCart = (productId) => {
+    return cart?.items?.some((item) => item.productId._id === productId);
+  };
+
+  const handleAddToCart = () => {
+    addToCart(user.id, productId, 1); // Assuming user.id is accessible
+  };
+
+  const renderAddToCartButton = () => {
+    if (isProductInCart(productId)) {
+      return (
+        <Button className="w-full" disabled>
+          Already added to the cart
+        </Button>
+      );
+    } else {
+      return (
+        <Button className="w-full" onClick={handleAddToCart}>
+          Add to Cart
+        </Button>
+      );
+    }
+  };
 
   if (!selectedProduct) {
     return null;
@@ -86,9 +115,7 @@ const ProductDetailsDialog = ({ open, setOpen, productId, product }) => {
             <p className="font-semibold md:text-xl "> (4.8)</p>
           </div>
           {/*  */}
-          <div>
-            <Button className="w-full ">Add to Cart</Button>
-          </div>
+          {renderAddToCartButton()}
           {/*  */}
 
           <Separator />
