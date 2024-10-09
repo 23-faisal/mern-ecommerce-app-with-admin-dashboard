@@ -21,7 +21,7 @@ const ProductCard = ({
 
   if (product?.length === 0) {
     return <div>No products available.</div>;
-  }
+  } 
 
   const handleAddToCart = () => {
     if (product) {

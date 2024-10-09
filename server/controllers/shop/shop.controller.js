@@ -75,3 +75,30 @@ export const productDetails = async (req, res) => {
     });
   }
 };
+
+// get latest product
+export const getLatestProduct = async (req, res) => {
+  try {
+    const latestProducts = await Product.find({})
+      .sort({ createdAt: -1 })
+      .limit(4);
+
+    if (!latestProducts || latestProducts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No latest products found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched latest products successfully",
+      data: latestProducts, // Corrected here
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

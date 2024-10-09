@@ -22,7 +22,7 @@ const images = [
 export default function ImageSlider() {
   // Slider settings
   const settings = {
-    // dots: true, // Show dots for navigation
+    dots: true,  // Show dots for navigation
     infinite: true, // Enable infinite scroll
     speed: 500, // Speed of transition
     slidesToShow: 1, // Show one slide at a time
@@ -47,10 +47,10 @@ export default function ImageSlider() {
   };
 
   return (
-    <div className="w-full max-h-[30vh] md:max-h-[60vh]">
+    <div className="w-full h-[30vh] md:h-[70vh] ">
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="w-full h-[30vh] md:h-[80vh]">
+          <div key={index} className="w-full h-[30vh] md:h-[70vh]">
             <img
               src={image}
               alt={`Slide ${index}`}
