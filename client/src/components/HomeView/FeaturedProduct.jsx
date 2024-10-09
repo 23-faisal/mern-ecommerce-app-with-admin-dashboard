@@ -127,7 +127,10 @@ const FeaturedProduct = () => {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => handleAddToCart(product._id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the card click event
+                      handleAddToCart(product._id);
+                    }}
                     className="mt-6 w-full"
                   >
                     Add To Cart
