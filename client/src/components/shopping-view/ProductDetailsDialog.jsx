@@ -1,4 +1,3 @@
-// src/components/shopping-view/ProductDetailsDialog.jsx
 import React from "react";
 import {
   Dialog,
@@ -14,7 +13,7 @@ import useCartStore from "@/store/cartStore/useCartStore";
 import useAuthStore from "@/store/authStore/userAuthStore";
 
 const ProductDetailsDialog = ({ open, setOpen, productId, product }) => {
-  const { addToCart, cart } = useCartStore(); // Use addToCart and cart from the cart store
+  const { addToCart, cart } = useCartStore();
   const { user } = useAuthStore();
   const selectedProduct = product?.find((p) => p._id === productId);
 
@@ -24,7 +23,7 @@ const ProductDetailsDialog = ({ open, setOpen, productId, product }) => {
   };
 
   const handleAddToCart = () => {
-    addToCart(user.id, productId, 1); // Assuming user.id is accessible
+    addToCart(user.id, productId, 1);
   };
 
   const renderAddToCartButton = () => {

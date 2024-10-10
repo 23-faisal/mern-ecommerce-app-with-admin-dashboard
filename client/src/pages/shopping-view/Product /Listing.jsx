@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import ProductFilter from "@/components/shopping-view/Filter";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,7 +55,8 @@ const ShoppingListing = () => {
         brands: selectedBrands.join(","),
         sort: sortOption,
       }),
-    enabled: true,
+
+    placeholderData: keepPreviousData,
   });
 
   // Handle filter or sort change
