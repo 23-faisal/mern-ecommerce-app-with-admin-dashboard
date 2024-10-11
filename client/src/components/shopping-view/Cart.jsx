@@ -23,12 +23,12 @@ const Cart = () => {
 
   const cartItems = cart?.items;
 
-  const totalPrice = cartItems.reduce(
+  const totalPrice = cartItems?.reduce(
     (acc, item) => acc + item.quantity * item.productId.price,
     0
   );
 
-  const totalSalePrice = cartItems.reduce(
+  const totalSalePrice = cartItems?.reduce(
     (acc, item) =>
       acc + item.quantity * (item.productId.salePrice || item.productId.price),
     0
