@@ -44,7 +44,7 @@ const AddressForm = () => {
     reset();
   };
 
-  console.log(address);
+
 
   return (
     <div className="flex justify-center">
