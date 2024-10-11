@@ -21,7 +21,7 @@ const ProductCard = ({
 
   if (product?.length === 0) {
     return <div>No products available.</div>;
-  } 
+  }
 
   const handleAddToCart = () => {
     if (product) {
@@ -31,7 +31,7 @@ const ProductCard = ({
 
   // see product is available in the cart
 
-  const cartItems = cart.items;
+  const cartItems = cart?.items;
 
   return (
     <Card className="p-4 hover:shadow-lg hover:shadow-slate-500 transition ease-in-out duration-75">
@@ -83,7 +83,7 @@ const ProductCard = ({
         </div>
       </div>
 
-      {cart.items.find((item) => item.productId._id === product._id) ? (
+      {cart?.items?.find((item) => item.productId._id === product._id) ? (
         // If the product exists in the cart, show some other button or text
         <Button disabled className="mt-6 w-full ">
           Already added in the cart
