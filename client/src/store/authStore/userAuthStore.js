@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import useAddressStore from "../addressStore/useAddressStore";
+import useCartStore from "../cartStore/useCartStore";
 
 const useAuthStore = create((set) => ({
   isAuthenticated: !!localStorage.getItem("user"),
@@ -12,6 +14,13 @@ const useAuthStore = create((set) => ({
   logout: () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    // Access the reset functions inside the logout function
+    const { resetAddressStore } = useAddressStore.getState();
+    const { resetCartStore } = useCartStore.getState();
+
+    
+    resetCartStore();
+    resetAddressStore();
     set({ isAuthenticated: false, user: null });
   },
 }));

@@ -93,6 +93,7 @@ const useCartStore = create(
 
           if (response?.data?.success) {
             const updatedCart = response?.data?.data; // Assuming this returns the updated cart
+            console.log("Updated cart:", updatedCart); // Log updated cart
             set({ cart: updatedCart });
           } else {
             console.error("Failed to remove item:", response?.data?.message);
@@ -100,6 +101,13 @@ const useCartStore = create(
         } catch (error) {
           console.error("Error removing item:", error.message);
         }
+      },
+
+      // reset cart store
+
+      resetCartStore: () => {
+        localStorage.removeItem("cart-storage");
+        set({ cart: [] });
       },
     }),
     {
