@@ -14,12 +14,14 @@ import {
 } from "../ui/sheet";
 
 import useAuthStore from "@/store/authStore/userAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cart, increaseQuantity, decreaseQuantity, removeItem } =
     useCartStore();
   const { user } = useAuthStore();
   const numberOfItems = cart?.items?.length || 0;
+  const navigate = useNavigate();
 
   const cartItems = cart?.items;
 
@@ -261,9 +263,16 @@ const Cart = () => {
                         <p className="font-semibold">{totalSalePrice} TK</p>
                       </div>
                     </div>
-                    <Button disabled className="w-full mt-4">
-                      Checkout
-                    </Button>
+                    <SheetFooter>
+                      <SheetClose asChild>
+                        <Button
+                          onClick={() => navigate("/shop/checkout")}
+                          className="w-full mt-4"
+                        >
+                          Checkout
+                        </Button>
+                      </SheetClose>
+                    </SheetFooter>
                   </div>
                 </>
               ) : (

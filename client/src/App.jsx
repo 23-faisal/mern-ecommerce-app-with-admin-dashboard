@@ -12,11 +12,11 @@ import PageNotFound from "./pages/page not found/PageNotFound";
 import ShoppingLayout from "./components/shopping-view/layout";
 import ShoppingHome from "./pages/shopping-view/Home/Home";
 import ShoppingListing from "./pages/shopping-view/Product /Listing";
-import ShoppingCheckOut from "./pages/shopping-view/Checkout/CheckOut";
 import ShoppingAccount from "./pages/shopping-view/Account/Account";
 import CheckAuth from "./components/common/CheckAuth";
 import UnAuth from "./pages/un-auth/UnAuth";
 import userAuthStore from "./store/authStore/userAuthStore";
+import ShoppingCheckout from "./pages/shopping-view/Checkout/ShoppingCheckout";
 
 function App() {
   const isAuthenticated = userAuthStore((state) => state.isAuthenticated);
@@ -60,7 +60,7 @@ function App() {
         >
           <Route path="home" element={<ShoppingHome />} />
           <Route path="listing" element={<ShoppingListing />} />
-          <Route path="checkout" element={<ShoppingCheckOut />} />
+          <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
         </Route>
 
