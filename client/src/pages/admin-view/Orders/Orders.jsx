@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,8 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@radix-ui/react-dialog";
+import OrderDetailsOnAdminSide from "@/components/ui/admin-view/OrderDetails";
 
 const AdminOrders = () => {
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   return (
     <div className="w-full">
       <Table>
@@ -29,9 +32,17 @@ const AdminOrders = () => {
             <TableCell className="font-medium">INV001</TableCell>
             <TableCell>12/10/12</TableCell>
             <TableCell>Pending</TableCell>
-            <TableCell>$250.00</TableCell>
+            <TableCell>14000 ৳ </TableCell>
             <TableCell>
-              <Button>View Details</Button>
+              <Dialog
+                open={openDetailsDialog}
+                onOpenChange={() => setOpenDetailsDialog(!openDetailsDialog)}
+              >
+                <Button onClick={() => setOpenDetailsDialog(true)}>
+                  View Details
+                </Button>
+                <OrderDetailsOnAdminSide />
+              </Dialog>
             </TableCell>
           </TableRow>
         </TableBody>
